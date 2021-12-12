@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Text;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -41,7 +43,7 @@ namespace Code.Services
             }
         }
         
-        public IEnumerator Post<T>(string url, T data)
+        public async UniTask PostWithoutResponse<T>(string url, T data)
         {
             var str = JsonService.ToJson(data);
             
@@ -59,8 +61,28 @@ namespace Code.Services
             {
                 request.method = "POST";
                 request.SetRequestHeader("Content-Type", "application/json");
-                yield return request.SendWebRequest();
+                request.certificateHandler = new CertificateWhore();
+                await request.SendWebRequest();
                 Debug.Log("Status Code: " + request.responseCode);
+            }
+        }
+        
+        public async UniTask<bool> PostWithResponse<T>(string url, T data)
+        {
+            var str = JsonService.ToJson(data);
+
+            using (var request = UnityWebRequest.Put(url, str))
+            {
+                request.method = "POST";
+                request.SetRequestHeader("Content-Type", "application/json");
+                request.certificateHandler = new CertificateWhore();
+                await request.SendWebRequest();
+                Debug.Log("Status Code: " + request.responseCode);
+
+                var json = request.downloadHandler.text;
+                var res = Convert.ToBoolean(json);
+                //var res = JsonService.FromJson<TResult>(json);
+                return res;
             }
         }
     }

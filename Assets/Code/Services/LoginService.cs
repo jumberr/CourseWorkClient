@@ -1,4 +1,5 @@
 ﻿using Code.Validators;
+using Cysharp.Threading.Tasks;
 using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
@@ -29,7 +30,7 @@ namespace Code.Services
         }
 
         [UsedImplicitly]
-        public void Login()
+        public async void Login()
         {
             var login = username.text;
             var pass = password.text;
@@ -42,10 +43,11 @@ namespace Code.Services
             if (result)
             {
                 // checks in DB
-                result = CheckUserCredentials(login, pass);
-                if (result)
+                var res = await CheckUserCredentials(login, pass);
+                if (res)
                 {
                     // player exist
+                    Debug.Log("SUCK A COCK FUCKING NIGGER");
                 }
                 else
                 {
@@ -87,10 +89,11 @@ namespace Code.Services
         }
 
         // Send request to db to check
-        private bool CheckUserCredentials(string login, string pass)
+        private async UniTask<bool> CheckUserCredentials(string login, string pass)
         {
-            
-            return false;
+            var url = "https://localhost:5001/api/PersonDetails/GetPersonByName";
+            var data = new User(login, pass);
+            return await DbService.Instance.PostWithResponse(url, data);
         }
 
         public void OnClickRegister()
