@@ -1,8 +1,10 @@
-﻿using Code.Validators;
+﻿using System;
+using Code.Validators;
 using Cysharp.Threading.Tasks;
 using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Code.Services
 {
@@ -48,6 +50,7 @@ namespace Code.Services
                 {
                     // player exist
                     Debug.Log("SUCK A COCK FUCKING NIGGER");
+                    SceneManager.LoadScene("GameScene");
                 }
                 else
                 {
@@ -91,9 +94,10 @@ namespace Code.Services
         // Send request to db to check
         private async UniTask<bool> CheckUserCredentials(string login, string pass)
         {
-            var url = "https://localhost:5001/api/PersonDetails/GetPersonByName";
+            var url = $"{Constants.Host}/{Constants.Api}/{Constants.PersonDetails}/{Constants.GetPersonByName}";
             var data = new User(login, pass);
-            return await DbService.Instance.PostWithResponse(url, data);
+            var result = await DbService.Instance.PostWithResponse(url, data);
+            return Convert.ToBoolean(result);
         }
 
         public void OnClickRegister()

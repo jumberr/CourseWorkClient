@@ -46,16 +46,6 @@ namespace Code.Services
         public async UniTask PostWithoutResponse<T>(string url, T data)
         {
             var str = JsonService.ToJson(data);
-            
-            //var request = new UnityWebRequest(url, "POST");
-            //byte[] bodyRaw = Encoding.UTF8.GetBytes(bodyJsonString);
-            //request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            //request.downloadHandler = new DownloadHandlerBuffer();
-            //request.SetRequestHeader("Content-Type", "application/json");
- //
-            //yield return request.SendWebRequest();
- //
-            //Debug.Log("Status Code: " + request.responseCode);
 
             using (var request = UnityWebRequest.Put(url, str))
             {
@@ -67,7 +57,7 @@ namespace Code.Services
             }
         }
         
-        public async UniTask<bool> PostWithResponse<T>(string url, T data)
+        public async UniTask<object> PostWithResponse<T>(string url, T data)
         {
             var str = JsonService.ToJson(data);
 
@@ -76,13 +66,15 @@ namespace Code.Services
                 request.method = "POST";
                 request.SetRequestHeader("Content-Type", "application/json");
                 request.certificateHandler = new CertificateWhore();
+                Debug.Log($"{request.error}");
                 await request.SendWebRequest();
                 Debug.Log("Status Code: " + request.responseCode);
+                Debug.Log($"{request.error}");
 
                 var json = request.downloadHandler.text;
-                var res = Convert.ToBoolean(json);
+                return json;
                 //var res = JsonService.FromJson<TResult>(json);
-                return res;
+                //return res;
             }
         }
     }

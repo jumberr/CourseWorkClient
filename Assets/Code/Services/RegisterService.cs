@@ -1,5 +1,4 @@
 ﻿using Code.Validators;
-using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
@@ -52,10 +51,9 @@ namespace Code.Services
         private async void SendRequestToRegister(string login, string pass)
         {
             var data = new User(login, pass);
-            //StartCoroutine(DbService.Instance
-            //    .Post("https://localhost:5001/api/PersonDetails/AddPerson", data));
+
             await DbService.Instance
-                .PostWithoutResponse("https://localhost:5001/api/PersonDetails/AddPerson", data);
+                .PostWithoutResponse( $"{Constants.Host}/{Constants.Api}/{Constants.PersonDetails}/{Constants.AddPerson}", data);
         }
 
         private bool Validate(string login, string pass, out bool loginOk, out bool passOk)
