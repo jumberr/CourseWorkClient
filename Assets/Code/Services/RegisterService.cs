@@ -1,4 +1,5 @@
-﻿using Code.Validators;
+﻿using Code.Models;
+using Code.Validators;
 using TMPro;
 using UnityEngine;
 
@@ -53,7 +54,7 @@ namespace Code.Services
             var data = new User(login, pass);
 
             await DbService.Instance
-                .PostWithoutResponse( $"{Constants.Host}/{Constants.Api}/{Constants.PersonDetails}/{Constants.AddPerson}", data);
+                .PostNoResponse( $"{Constants.Host}/{Constants.Api}/{Constants.Person}/{Constants.Add}", data);
         }
 
         private bool Validate(string login, string pass, out bool loginOk, out bool passOk)

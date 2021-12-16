@@ -1,4 +1,5 @@
 ﻿using System;
+using Code.Models;
 using Code.Validators;
 using Cysharp.Threading.Tasks;
 using JetBrains.Annotations;
@@ -10,6 +11,7 @@ namespace Code.Services
 {
     public class LoginService : MonoBehaviour
     {
+        [SerializeField] private Credentials _credentials;
         [SerializeField] private GameObject register;
         
         [SerializeField] private TMP_InputField username;
@@ -25,10 +27,23 @@ namespace Code.Services
         private IValidator _usernameValidator;
         private IValidator _passwordValidator;
         
-        private void Start()
+        private void Awake()
         {
             _usernameValidator = new UsernameValidator();
             _passwordValidator = new PasswordValidator();
+        }
+
+        private async void Start()
+        {
+            var res = await CheckUserCredentials(_credentials.login, _credentials.pass);
+            if (res)
+                TryToLogin();
+        }
+
+        private void TryToLogin()
+        {
+            
+            LoadGameAfterLogin();
         }
 
         [UsedImplicitly]
@@ -48,9 +63,9 @@ namespace Code.Services
                 var res = await CheckUserCredentials(login, pass);
                 if (res)
                 {
-                    // player exist
-                    Debug.Log("SUCK A COCK FUCKING NIGGER");
-                    SceneManager.LoadScene("GameScene");
+                    _credentials.login = login;
+                    _credentials.pass = pass;
+                    LoadGameAfterLogin();
                 }
                 else
                 {
@@ -64,6 +79,11 @@ namespace Code.Services
             {
                 ValidationError(loginOk, passOk);
             }
+        }
+
+        private void LoadGameAfterLogin()
+        {
+            SceneManager.LoadSceneAsync("GameScene");
         }
 
         // Check locally
@@ -94,9 +114,9 @@ namespace Code.Services
         // Send request to db to check
         private async UniTask<bool> CheckUserCredentials(string login, string pass)
         {
-            var url = $"{Constants.Host}/{Constants.Api}/{Constants.PersonDetails}/{Constants.GetPersonByName}";
+            var url = $"{Constants.Host}/{Constants.Api}/{Constants.Person}/{Constants.Get}";
             var data = new User(login, pass);
-            var result = await DbService.Instance.PostWithResponse(url, data);
+            var result = await DbService.Instance.GetResponse(url, data);
             return Convert.ToBoolean(result);
         }
 

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Code.Models;
+using UnityEngine;
 
 namespace Code.Services
 {
@@ -12,6 +13,12 @@ namespace Code.Services
         public static T FromJson<T>(string data)
         {
             return JsonUtility.FromJson<T>(data);
+        }
+        
+        public static T[] FromJsonToList<T>(string json)
+        {
+            Wrapper<T> wrapper = JsonUtility.FromJson<Wrapper<T>>("{\"Items\":" + json + "}");
+            return wrapper.Items;
         }
     }
 }

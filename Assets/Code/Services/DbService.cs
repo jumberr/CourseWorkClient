@@ -1,81 +1,70 @@
 ﻿using System;
-using System.Collections;
-using System.Text;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
 
 namespace Code.Services
 {
-    public class DbService : MonoBehaviour
+    [Serializable]
+    public class DbService
     {
-        public static DbService Instance;
-
-        private void Awake()
-        {
-            Instance = this;
-            DontDestroyOnLoad(this);
-        }
-
-        public IEnumerator GetRequest(string uri)
-        {
-            using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
-            {
-                // Request and wait for the desired page.
-                yield return webRequest.SendWebRequest();
-
-                string[] pages = uri.Split('/');
-                int page = pages.Length - 1;
-
-                switch (webRequest.result)
-                {
-                    case UnityWebRequest.Result.ConnectionError:
-                    case UnityWebRequest.Result.DataProcessingError:
-                        Debug.LogError(pages[page] + ": Error: " + webRequest.error);
-                        break;
-                    case UnityWebRequest.Result.ProtocolError:
-                        Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
-                        break;
-                    case UnityWebRequest.Result.Success:
-                        Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
-                        break;
-                }
-            }
-        }
+        private static DbService instance;
         
-        public async UniTask PostWithoutResponse<T>(string url, T data)
+        public static DbService Instance => 
+            instance ??= new DbService();
+
+        public async UniTask PostNoResponse<T>(string url, T data)
         {
             var str = JsonService.ToJson(data);
 
-            using (var request = UnityWebRequest.Put(url, str))
-            {
-                request.method = "POST";
-                request.SetRequestHeader("Content-Type", "application/json");
-                request.certificateHandler = new CertificateWhore();
-                await request.SendWebRequest();
-                Debug.Log("Status Code: " + request.responseCode);
-            }
+            using var request = UnityWebRequest.Put(url, str);
+            request.method = "POST";
+            request.SetRequestHeader("Content-Type", "application/json");
+            request.certificateHandler = new CertificateWhore();
+            await request.SendWebRequest();
+            Debug.Log("Status Code: " + request.responseCode);
         }
         
-        public async UniTask<object> PostWithResponse<T>(string url, T data)
+        public async UniTask<object> PostResponse<T>(string url, T data)
         {
             var str = JsonService.ToJson(data);
 
-            using (var request = UnityWebRequest.Put(url, str))
-            {
-                request.method = "POST";
-                request.SetRequestHeader("Content-Type", "application/json");
-                request.certificateHandler = new CertificateWhore();
-                Debug.Log($"{request.error}");
-                await request.SendWebRequest();
-                Debug.Log("Status Code: " + request.responseCode);
-                Debug.Log($"{request.error}");
+            using var request = UnityWebRequest.Put(url, str);
+            request.method = "POST";
+            request.SetRequestHeader("Content-Type", "application/json");
+            request.certificateHandler = new CertificateWhore();
+            await request.SendWebRequest();
+            Debug.Log("Status Code: " + request.responseCode);
 
-                var json = request.downloadHandler.text;
-                return json;
-                //var res = JsonService.FromJson<TResult>(json);
-                //return res;
-            }
+            var json = request.downloadHandler.text;
+            return json;
+        }
+        
+        public async UniTask<object> GetResponse(string url)
+        {
+            using var request = UnityWebRequest.Get(url);
+            request.method = "GET";
+            request.certificateHandler = new CertificateWhore();
+            await request.SendWebRequest();
+            Debug.Log("Status Code: " + request.responseCode);
+
+            var json = request.downloadHandler.text;
+            return json;
+        }
+        
+        public async UniTask<object> GetResponse<T>(string url, T data)
+        {
+            var str = JsonService.ToJson(data);
+
+            using var request = UnityWebRequest.Put(url, str);
+            request.method = "GET";
+            request.SetRequestHeader("Content-Type", "application/json");
+            request.certificateHandler = new CertificateWhore();
+            await request.SendWebRequest();
+            Debug.Log("Status Code: " + request.responseCode);
+
+            var json = request.downloadHandler.text;
+            return json;
         }
     }
 }
