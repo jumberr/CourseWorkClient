@@ -28,6 +28,11 @@ namespace Code.Services
             _passwordValidator = new PasswordValidator();
         }
 
+        public void BackToLogin()
+        {
+            registerPopup.SetActive(false);
+        }
+
         public void Register()
         {
             var login = username.text;

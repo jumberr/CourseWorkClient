@@ -12,21 +12,24 @@ namespace Code.Services
     public class LoginService : MonoBehaviour
     {
         [SerializeField] private Credentials _credentials;
+
+        [SerializeField] private GameObject play;
+        [SerializeField] private GameObject login;
         [SerializeField] private GameObject register;
-        
+
         [SerializeField] private TMP_InputField username;
         [SerializeField] private TMP_InputField password;
 
         [SerializeField] private GameObject usernameError;
         [SerializeField] private GameObject passwordError;
-        
+
         [SerializeField] private TMP_Text usernameErrorText;
         [SerializeField] private TMP_Text passwordErrorText;
 
-        
+
         private IValidator _usernameValidator;
         private IValidator _passwordValidator;
-        
+
         private void Awake()
         {
             _usernameValidator = new UsernameValidator();
@@ -37,17 +40,10 @@ namespace Code.Services
         {
             var res = await CheckUserCredentials(_credentials.login, _credentials.pass);
             if (res)
-                TryToLogin();
+                AutomateLogin();
         }
 
-        private void TryToLogin()
-        {
-            
-            LoadGameAfterLogin();
-        }
-
-        [UsedImplicitly]
-        public async void Login()
+        private async UniTask<bool> Login()
         {
             var login = username.text;
             var pass = password.text;
@@ -65,7 +61,8 @@ namespace Code.Services
                 {
                     _credentials.login = login;
                     _credentials.pass = pass;
-                    LoadGameAfterLogin();
+                    //LoadGameAfterLogin();
+                    return true;
                 }
                 else
                 {
@@ -73,12 +70,36 @@ namespace Code.Services
                     passwordError.SetActive(true);
                     usernameErrorText.text = "Check your input! Your credentials invalid. Register, please!";
                     passwordErrorText.text = "Check your input! Your credentials invalid. Register, please!";
+                    return false;
                 }
             }
             else
             {
                 ValidationError(loginOk, passOk);
+                return false;
             }
+        }
+
+        public void AutomateLogin()
+        {
+            login.SetActive(false);
+        }
+
+        private async void OpenPlayButton()
+        {
+            var res = await Login();
+            if (res)
+                login.SetActive(false);
+        }
+
+        public void SwitchUser()
+        {
+            login.SetActive(true);
+        }
+
+        public void GoToGame()
+        {
+            LoadGameAfterLogin();
         }
 
         private void LoadGameAfterLogin()
@@ -91,8 +112,8 @@ namespace Code.Services
         {
             loginOk = _usernameValidator.Validate(login);
             passOk = _passwordValidator.Validate(pass);
-            
-            return  loginOk && passOk;
+
+            return loginOk && passOk;
         }
 
         private void ValidationError(bool loginOk, bool passOk)
@@ -103,6 +124,7 @@ namespace Code.Services
                 usernameError.SetActive(true);
                 usernameErrorText.text = "Check your input! Text should be length 6+, english language, no digits";
             }
+
             if (!passOk)
             {
                 // Draw pass error

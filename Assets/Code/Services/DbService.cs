@@ -66,5 +66,20 @@ namespace Code.Services
             var json = request.downloadHandler.text;
             return json;
         }
+        
+        public async UniTask<object> DeleteResponse<T>(string url, T data)
+        {
+            var str = JsonService.ToJson(data);
+
+            using var request = UnityWebRequest.Put(url, str);
+            request.method = "DELETE";
+            request.SetRequestHeader("Content-Type", "application/json");
+            request.certificateHandler = new CertificateWhore();
+            await request.SendWebRequest();
+            Debug.Log("Status Code: " + request.responseCode);
+
+            var json = request.downloadHandler.text;
+            return json;
+        }
     }
 }

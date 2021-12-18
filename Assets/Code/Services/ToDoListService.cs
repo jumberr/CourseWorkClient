@@ -5,6 +5,7 @@ using Code.Models;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Code.Services
 {
@@ -15,23 +16,26 @@ namespace Code.Services
 
         [SerializeField] private Transform placeToSpawnToDo;
         [SerializeField] private GameObject toDoPrefab;
-        
+
         [SerializeField] private TMP_InputField todoName;
         [SerializeField] private TMP_InputField todoDescription;
+        [SerializeField] private TMP_InputField todoStatus;
 
-        private List<GameObject> toDoGo = new List<GameObject>();
-        private List<ToDoContainer> containers = new List<ToDoContainer>();
+        private CustomContainer customContainer;
+        private int _personId;
 
         private async void Awake()
         {
-            var personID = await GetPersonID();
-            var url = $"{Constants.Host}/{Constants.Api}/{Constants.ToDo}/{Constants.GetAll}/{personID}";
-            
+            customContainer = new CustomContainer();
+
+            _personId = await GetPersonID();
+            var url = $"{Constants.Host}/{Constants.Api}/{Constants.ToDo}/{Constants.GetAll}/{_personId}";
+
             var res = await DbService.Instance.GetResponse(url);
-            var list = JsonService.FromJsonToList<ToDo>((string)res);
+            var list = JsonService.FromJsonToList<ToDo>((string) res);
 
             for (var i = 0; i < list.Length; i++)
-                InstantiateToDoLocally(list[i]);
+                InstantiateToDoLocally(list[i], list[i].id);
         }
 
         public async void Add()
@@ -39,11 +43,18 @@ namespace Code.Services
             var personID = await GetPersonID();
 
             var url = $"{Constants.Host}/{Constants.Api}/{Constants.ToDo}/{Constants.Add}";
-            var todo = new ToDo(personID, todoName.text, todoDescription.text, DatePickerControl.DateGlobal.ToString(), false);
-            await DbService.Instance.PostResponse(url, todo);
+            var todo = new ToDo(personID, todoName.text, todoDescription.text, DatePickerControl.DateGlobal.ToString(),
+                todoStatus.text);
+            var obj = await DbService.Instance.PostResponse(url, todo);
+            var todoDbId = Convert.ToInt32(obj);
 
-            InstantiateToDoLocally(todo);
+            InstantiateToDoLocally(todo, todoDbId);
             _mediator.CloseToDoAdd();
+
+
+            todoDescription.text = string.Empty;
+            todoName.text = string.Empty;
+            todoStatus.text = string.Empty;
         }
 
         private async UniTask<int> GetPersonID()
@@ -56,12 +67,12 @@ namespace Code.Services
             return result;
         }
 
-        private void InstantiateToDoLocally(ToDo toDo)
+        private void InstantiateToDoLocally(ToDo toDo, int dbId)
         {
             var obj = Instantiate(toDoPrefab, placeToSpawnToDo);
             var cont = obj.GetComponent<ToDoContainer>();
-            containers.Add(cont);
-            toDoGo.Add(obj);
+            customContainer.Add(dbId, obj, cont);
+            cont.deleteButton.onClick.AddListener(() => DeleteToDo(toDo, dbId));
             SetTexts(cont, toDo);
         }
 
@@ -70,7 +81,53 @@ namespace Code.Services
             cont.name.text = todo.name_ToDo;
             cont.description.text = todo.description_ToDo;
             cont.date.text = todo.end_date_ToDo;
-            cont.status.text = todo.status_ToDo.ToString();
+            cont.status.text = todo.status_ToDo;
+        }
+
+        private async void DeleteToDo(ToDo todo, int index)
+        {
+            var url = $"{Constants.Host}/{Constants.Api}/{Constants.ToDo}/{Constants.Delete}/{_personId}/{index}";
+            var obj = await DbService.Instance.DeleteResponse(url, todo);
+            var localId = Convert.ToInt32(obj);
+            Destroy(customContainer.View[localId]);
+            customContainer.Remove(localId);
+        }
+
+        public void GoToLogin()
+        {
+            SceneManager.LoadSceneAsync("LoginScene");
+        }
+    }
+
+    public class CustomContainer
+    {
+        private List<int> dbId;
+        private List<GameObject> view;
+        private List<ToDoContainer> container;
+
+        public IReadOnlyList<int> DbId => dbId;
+        public IReadOnlyList<GameObject> View => view;
+        public IReadOnlyList<ToDoContainer> Containers => container;
+
+        public CustomContainer()
+        {
+            dbId = new List<int>();
+            view = new List<GameObject>();
+            container = new List<ToDoContainer>();
+        }
+
+        public void Add(int id, GameObject v, ToDoContainer c)
+        {
+            dbId.Add(id);
+            view.Add(v);
+            container.Add(c);
+        }
+
+        public void Remove(int id)
+        {
+            dbId.RemoveAt(id);
+            view.RemoveAt(id);
+            container.RemoveAt(id);
         }
     }
 }

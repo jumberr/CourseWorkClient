@@ -5,7 +5,7 @@ namespace Code.Models
     [Serializable]
     public class ToDo
     {
-        public ToDo(int creator, string nameToDo, string descriptionToDo, string endDateToDo, bool statusToDo)
+        public ToDo(int creator, string nameToDo, string descriptionToDo, string endDateToDo, string statusToDo)
         {
             this.creator = creator;
             name_ToDo = nameToDo;
@@ -25,7 +25,7 @@ namespace Code.Models
         public int creator;
         public string name_ToDo;
         public string end_date_ToDo;
-        public bool status_ToDo;
+        public string status_ToDo;
         public string description_ToDo;
     }
 }
