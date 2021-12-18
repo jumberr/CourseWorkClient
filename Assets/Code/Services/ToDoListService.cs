@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Code.Containers;
 using Code.Models;
 using Cysharp.Threading.Tasks;
@@ -16,20 +17,25 @@ namespace Code.Services
 
         [SerializeField] private Transform placeToSpawnToDo;
         [SerializeField] private GameObject toDoPrefab;
+        [SerializeField] private GameObject updateWindow;
 
         [SerializeField] private TMP_InputField todoName;
         [SerializeField] private TMP_InputField todoDescription;
         [SerializeField] private TMP_InputField todoStatus;
 
-        private CustomContainer customContainer;
-        private int _personId;
+        [SerializeField] private TMP_InputField updateName;
+        [SerializeField] private TMP_InputField updateDescription;
+        [SerializeField] private TMP_InputField updateStatus;
 
-        private async void Awake()
+        private CustomContainer customContainer;
+        private bool accept;
+
+        private async void Start()
         {
             customContainer = new CustomContainer();
 
-            _personId = await GetPersonID();
-            var url = $"{Constants.Host}/{Constants.Api}/{Constants.ToDo}/{Constants.GetAll}/{_personId}";
+            GameManager.instance.PersonId = await GetPersonID();
+            var url = $"{Constants.Host}/{Constants.Api}/{Constants.ToDo}/{Constants.GetAll}/{GameManager.instance.PersonId}";
 
             var res = await DbService.Instance.GetResponse(url);
             var list = JsonService.FromJsonToList<ToDo>((string) res);
@@ -56,10 +62,10 @@ namespace Code.Services
             todoName.text = string.Empty;
             todoStatus.text = string.Empty;
         }
-        
+
         private async UniTask Delete(ToDo todo, int index)
         {
-            var url = $"{Constants.Host}/{Constants.Api}/{Constants.ToDo}/{Constants.Delete}/{_personId}/{index}";
+            var url = $"{Constants.Host}/{Constants.Api}/{Constants.ToDo}/{Constants.Delete}/{GameManager.instance.PersonId}/{index}";
             var obj = await DbService.Instance.PostResponse(url, todo);
             var localId = Convert.ToInt32(obj);
             Destroy(customContainer.View[localId]);
@@ -82,10 +88,57 @@ namespace Code.Services
             var cont = obj.GetComponent<ToDoContainer>();
             customContainer.Add(dbId, obj, cont);
             cont.deleteButton.onClick.AddListener(CallDelete);
+            cont.updatePopup.onClick.AddListener(CallUpdate);
             SetTexts(cont, toDo);
-            
+
             async void CallDelete() => await Delete(toDo, dbId);
+            async void CallUpdate() => await OpenUpdate(dbId);
         }
+
+        private async Task OpenUpdate(int dbId)
+        {
+            updateWindow.SetActive(true);
+            await UniTask.WaitUntil(() => accept);
+            await UpdateValue(dbId);
+        }
+
+        private async UniTask UpdateValue(int id)
+        {
+            var url = $"{Constants.Host}/{Constants.Api}/{Constants.ToDo}/{Constants.Update}/{GameManager.instance.PersonId}/{id}";
+
+            var name = updateName.text;
+            var description = updateDescription.text;
+            var time = DatePickerControl.DateGlobal.ToString();
+            var type = updateStatus.text;
+
+            var todo = new ToDo(GameManager.instance.PersonId, name, description, time, type);
+            var obj = await DbService.Instance.PostResponse(url, todo);
+            var localId = Convert.ToInt32(obj);
+
+            var container = customContainer.Containers[localId];
+            container.name.text = name;
+            container.description.text = description;
+            container.date.text = time;
+            container.status.text = type;
+
+            updateWindow.SetActive(false);
+            accept = false;
+
+            updateName.text = string.Empty;
+            updateDescription.text = string.Empty;
+            updateStatus.text = string.Empty;
+        }
+
+        public void ApplyUpdate()
+        {
+            accept = true;
+        }
+
+        public void CloseUpdate()
+        {
+            updateWindow.SetActive(false);
+        }
+
 
         private void SetTexts(ToDoContainer cont, ToDo todo)
         {
