@@ -56,6 +56,15 @@ namespace Code.Services
             todoName.text = string.Empty;
             todoStatus.text = string.Empty;
         }
+        
+        private async UniTask Delete(ToDo todo, int index)
+        {
+            var url = $"{Constants.Host}/{Constants.Api}/{Constants.ToDo}/{Constants.Delete}/{_personId}/{index}";
+            var obj = await DbService.Instance.PostResponse(url, todo);
+            var localId = Convert.ToInt32(obj);
+            Destroy(customContainer.View[localId]);
+            customContainer.Remove(localId);
+        }
 
         private async UniTask<int> GetPersonID()
         {
@@ -72,8 +81,10 @@ namespace Code.Services
             var obj = Instantiate(toDoPrefab, placeToSpawnToDo);
             var cont = obj.GetComponent<ToDoContainer>();
             customContainer.Add(dbId, obj, cont);
-            cont.deleteButton.onClick.AddListener(() => DeleteToDo(toDo, dbId));
+            cont.deleteButton.onClick.AddListener(CallDelete);
             SetTexts(cont, toDo);
+            
+            async void CallDelete() => await Delete(toDo, dbId);
         }
 
         private void SetTexts(ToDoContainer cont, ToDo todo)
@@ -82,15 +93,6 @@ namespace Code.Services
             cont.description.text = todo.description_ToDo;
             cont.date.text = todo.end_date_ToDo;
             cont.status.text = todo.status_ToDo;
-        }
-
-        private async void DeleteToDo(ToDo todo, int index)
-        {
-            var url = $"{Constants.Host}/{Constants.Api}/{Constants.ToDo}/{Constants.Delete}/{_personId}/{index}";
-            var obj = await DbService.Instance.DeleteResponse(url, todo);
-            var localId = Convert.ToInt32(obj);
-            Destroy(customContainer.View[localId]);
-            customContainer.Remove(localId);
         }
 
         public void GoToLogin()
