@@ -8,6 +8,8 @@
         // Controller
         public const string Person = "Person";
         public const string ToDo = "ToDo";
+        public const string Birthday = "Birthday";
+        public const string Note = "Note";
         
         // Methods
         public const string Add = "Add";

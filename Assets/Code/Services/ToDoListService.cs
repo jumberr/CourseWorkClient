@@ -34,11 +34,13 @@ namespace Code.Services
         {
             customContainer = new CustomContainer();
 
-            GameManager.instance.PersonId = await GetPersonID();
-            var url = $"{Constants.Host}/{Constants.Api}/{Constants.ToDo}/{Constants.GetAll}/{GameManager.instance.PersonId}";
+            //GameManager.instance.PersonId = await GetPersonID();
+            await UniTask.WaitUntil(() => GameManager.instance.isLoaded);
+            var url =
+                $"{Constants.Host}/{Constants.Api}/{Constants.ToDo}/{Constants.GetAll}/{GameManager.instance.PersonId}";
 
             var res = await DbService.Instance.GetResponse(url);
-            var list = JsonService.FromJsonToList<ToDo>((string) res);
+            var list = JsonService.FromJsonToList<ToDo>((string) res); // here list is 0 elems.
 
             for (var i = 0; i < list.Length; i++)
                 InstantiateToDoLocally(list[i], list[i].id);
@@ -46,7 +48,7 @@ namespace Code.Services
 
         public async void Add()
         {
-            var personID = await GetPersonID();
+            var personID = GameManager.instance.PersonId;
 
             var url = $"{Constants.Host}/{Constants.Api}/{Constants.ToDo}/{Constants.Add}";
             var todo = new ToDo(personID, todoName.text, todoDescription.text, DatePickerControl.DateGlobal.ToString(),
@@ -65,21 +67,12 @@ namespace Code.Services
 
         private async UniTask Delete(ToDo todo, int index)
         {
-            var url = $"{Constants.Host}/{Constants.Api}/{Constants.ToDo}/{Constants.Delete}/{GameManager.instance.PersonId}/{index}";
+            var url =
+                $"{Constants.Host}/{Constants.Api}/{Constants.ToDo}/{Constants.Delete}/{GameManager.instance.PersonId}/{index}";
             var obj = await DbService.Instance.PostResponse(url, todo);
             var localId = Convert.ToInt32(obj);
             Destroy(customContainer.View[localId]);
             customContainer.Remove(localId);
-        }
-
-        private async UniTask<int> GetPersonID()
-        {
-            var uri = $"{Constants.Host}/{Constants.Api}/{Constants.Person}/{Constants.GetID}";
-            var person = new User(_credentials.login, _credentials.pass);
-            var obj = await DbService.Instance.GetResponse(uri, person);
-            var res = (string) obj;
-            var result = Convert.ToInt32(res);
-            return result;
         }
 
         private void InstantiateToDoLocally(ToDo toDo, int dbId)
@@ -104,7 +97,8 @@ namespace Code.Services
 
         private async UniTask UpdateValue(int id)
         {
-            var url = $"{Constants.Host}/{Constants.Api}/{Constants.ToDo}/{Constants.Update}/{GameManager.instance.PersonId}/{id}";
+            var url =
+                $"{Constants.Host}/{Constants.Api}/{Constants.ToDo}/{Constants.Update}/{GameManager.instance.PersonId}/{id}";
 
             var name = updateName.text;
             var description = updateDescription.text;
@@ -138,7 +132,6 @@ namespace Code.Services
         {
             updateWindow.SetActive(false);
         }
-
 
         private void SetTexts(ToDoContainer cont, ToDo todo)
         {

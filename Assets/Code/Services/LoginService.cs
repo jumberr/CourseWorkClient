@@ -85,7 +85,7 @@ namespace Code.Services
             login.SetActive(false);
         }
 
-        private async void OpenPlayButton()
+        public async void OpenPlayButton()
         {
             var res = await Login();
             if (res)

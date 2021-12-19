@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4896277416562294149}
   - component: {fileID: 1353996275757565028}
   m_Layer: 5
-  m_Name: Description [Value]
+  m_Name: Additional info [Value]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -34,8 +34,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 101.58, y: 32.999985}
-  m_SizeDelta: {x: 764.56, y: 50}
+  m_AnchoredPosition: {x: 130.35, y: 32.999985}
+  m_SizeDelta: {x: 707.01, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4896277416562294149
 CanvasRenderer:
@@ -266,7 +266,7 @@ GameObject:
   - component: {fileID: 2859295660258834306}
   - component: {fileID: 5552759192990655185}
   m_Layer: 5
-  m_Name: EndDate [Value]
+  m_Name: Date [Value]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -288,8 +288,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 81.11801, y: -20}
-  m_SizeDelta: {x: 809.74, y: 50}
+  m_AnchoredPosition: {x: 45.691, y: -20}
+  m_SizeDelta: {x: 880.59, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2859295660258834306
 CanvasRenderer:
@@ -625,7 +625,7 @@ GameObject:
   - component: {fileID: 1480324493193448618}
   - component: {fileID: 2020940174665778845}
   m_Layer: 5
-  m_Name: Status [Value]
+  m_Name: PhoneNumber [Value]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -647,8 +647,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 45.689, y: -74.30002}
-  m_SizeDelta: {x: 880.59, y: 50}
+  m_AnchoredPosition: {x: 131.42, y: -74.30002}
+  m_SizeDelta: {x: 709.14, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1480324493193448618
 CanvasRenderer:
@@ -759,7 +759,7 @@ GameObject:
   - component: {fileID: 7990171300086344730}
   - component: {fileID: 7990171300086344731}
   m_Layer: 5
-  m_Name: Description
+  m_Name: Additional info
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -781,8 +781,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -389.87973, y: 32.999985}
-  m_SizeDelta: {x: 218.3657, y: 50}
+  m_AnchoredPosition: {x: -361.1081, y: 32.999985}
+  m_SizeDelta: {x: 275.909, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7990171300086344730
 CanvasRenderer:
@@ -812,7 +812,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Description:'
+  m_text: 'Additional info:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b03b7a4c74cd6294ca732f49684716ee, type: 2}
   m_sharedMaterial: {fileID: 21207439413246594, guid: b03b7a4c74cd6294ca732f49684716ee, type: 2}
@@ -1088,7 +1088,7 @@ GameObject:
   - component: {fileID: 7990171300805227854}
   - component: {fileID: 7990171300805227855}
   m_Layer: 5
-  m_Name: EndDate
+  m_Name: Date
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1110,8 +1110,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -411.42578, y: -20}
-  m_SizeDelta: {x: 175.3504, y: 50}
+  m_AnchoredPosition: {x: -446.85, y: -20}
+  m_SizeDelta: {x: 104.49, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7990171300805227854
 CanvasRenderer:
@@ -1141,7 +1141,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'End Date:'
+  m_text: 'Date:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b03b7a4c74cd6294ca732f49684716ee, type: 2}
   m_sharedMaterial: {fileID: 21207439413246594, guid: b03b7a4c74cd6294ca732f49684716ee, type: 2}
@@ -1222,7 +1222,7 @@ GameObject:
   - component: {fileID: 7990171300892917956}
   - component: {fileID: 7990171300892917957}
   m_Layer: 5
-  m_Name: Status
+  m_Name: PhoneNumber
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1244,8 +1244,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -446.85382, y: -74.30002}
-  m_SizeDelta: {x: 104.4923, y: 50}
+  m_AnchoredPosition: {x: -361.13, y: -74.30002}
+  m_SizeDelta: {x: 275.95, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7990171300892917956
 CanvasRenderer:
@@ -1275,7 +1275,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Type:'
+  m_text: 'Phone Number:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b03b7a4c74cd6294ca732f49684716ee, type: 2}
   m_sharedMaterial: {fileID: 21207439413246594, guid: b03b7a4c74cd6294ca732f49684716ee, type: 2}
@@ -1487,9 +1487,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7990171301264273951}
-  - component: {fileID: 4594407053250553366}
+  - component: {fileID: 6773950770839717904}
   m_Layer: 5
-  m_Name: ToDoContentPrefab
+  m_Name: BirthdayContent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1526,7 +1526,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1019.961, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &4594407053250553366
+--- !u!114 &6773950770839717904
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1535,12 +1535,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 7990171301264273948}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ed1f57940428b44784ea64c49256a29, type: 3}
+  m_Script: {fileID: 11500000, guid: 299d23f49ac240e190c09672cea6cd92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   deleteButton: {fileID: 1716336747950364430}
   updatePopup: {fileID: 7990171300338854190}
   name: {fileID: 478558944226500735}
-  description: {fileID: 1353996275757565028}
   date: {fileID: 5552759192990655185}
-  status: {fileID: 2020940174665778845}
+  phone: {fileID: 2020940174665778845}
+  addition: {fileID: 1353996275757565028}
